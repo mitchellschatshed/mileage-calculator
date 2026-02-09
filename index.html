@@ -5,103 +5,117 @@
 <title>Mitchells Mileage Calculator</title>
 
 <style>
-body {
-  margin:0;
-  background:#111;
-  font-family:Arial, sans-serif;
-  color:white;
-}
+  body {
+    margin:0;
+    background:#111;
+    color:#f4f4f4;
+    font-family: Arial, sans-serif;
+  }
 
-.wrap {
-  max-width:1000px;
-  margin:auto;
-  padding:25px;
-}
+  .wrap {
+    max-width: 980px;
+    margin: auto;
+    padding: 28px 16px 60px;
+  }
 
-h1 {
-  font-size:22px;
-  margin-bottom:5px;
-}
+  h1 {
+    margin:0 0 6px;
+    font-size: 22px;
+  }
 
-.sub {
-  color:#bbb;
-  font-size:14px;
-  margin-bottom:20px;
-}
+  p.sub {
+    margin:0 0 18px;
+    color:#bbb;
+    font-size:14px;
+    line-height:1.4;
+  }
 
-.card {
-  background:#1b1b1b;
-  padding:18px;
-  border-radius:10px;
-  margin-bottom:15px;
-  box-shadow:0 8px 25px rgba(0,0,0,.5);
-}
+  .grid {
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:14px;
+  }
 
-label {
-  display:block;
-  margin:10px 0 6px;
-  font-size:13px;
-  color:#bbb;
-}
+  @media(min-width:860px){
+    .grid {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
 
-input, select {
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #333;
-  background:#0f0f0f;
-  color:white;
-}
+  .card {
+    background:#1b1b1b;
+    border-radius:10px;
+    padding:16px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+  }
 
-button {
-  background:#2aa876;
-  border:none;
-  color:white;
-  padding:10px 16px;
-  border-radius:8px;
-  cursor:pointer;
-  font-size:14px;
-  margin-top:12px;
-}
+  label {
+    display:block;
+    font-size:13px;
+    color:#bbb;
+    margin:10px 0 6px;
+  }
 
-button.secondary {
-  background:#333;
-}
+  input, select {
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid #333;
+    background:#0f0f0f;
+    color:white;
+  }
 
-table {
-  width:100%;
-  border-collapse:collapse;
-  margin-top:10px;
-}
+  button {
+    background:#2aa876;
+    border:none;
+    color:white;
+    padding:10px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    margin-top:12px;
+  }
 
-th, td {
-  border-bottom:1px solid #333;
-  padding:10px;
-  font-size:13px;
-  text-align:left;
-}
+  button.secondary {
+    background:#2b2b2b;
+    border:1px solid #3a3a3a;
+  }
 
-th {
-  color:#aaa;
-}
+  .pill {
+    background:#141414;
+    border:1px solid #2a2a2a;
+    padding:12px;
+    border-radius:10px;
+    margin-top:10px;
+  }
 
-.pill {
-  background:#141414;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #333;
-  margin-top:10px;
-}
+  .pill .k {
+    color:#aaa;
+    font-size:12px;
+  }
 
-.pill .k {
-  color:#aaa;
-  font-size:12px;
-}
+  .pill .v {
+    font-size:18px;
+    margin-top:6px;
+  }
 
-.pill .v {
-  font-size:18px;
-  margin-top:6px;
-}
+  table {
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+  }
+
+  th, td {
+    border-bottom:1px solid #2a2a2a;
+    padding:10px 8px;
+    font-size:13px;
+    text-align:left;
+  }
+
+  th {
+    color:#aaa;
+    font-weight:600;
+  }
 </style>
 </head>
 
@@ -110,87 +124,103 @@ th {
 
 <h1>Mitchells Mileage + AFR VAT Calculator</h1>
 <p class="sub">
-Standard mileage claim plus HMRC Advisory Fuel Rates (AFR).  
-VAT element is calculated as fuel ÷ 6.
+Standard mileage allowance (45p/25p) plus HMRC Advisory Fuel Rates for VAT fuel element (fuel ÷ 6).
 </p>
 
-<!-- INPUT FORM -->
-<div class="card">
-  <h2 style="margin:0;font-size:16px;">Add Trip</h2>
+<!-- DASHBOARD -->
+<div class="grid">
 
-  <label>Date</label>
-  <input id="date" type="date">
+  <!-- LEFT: ADD TRIP -->
+  <div class="card">
+    <h2 style="margin:0 0 10px;font-size:16px;">Add Trip</h2>
 
-  <label>Staff Name</label>
-  <input id="staff" placeholder="e.g. James Biggs">
+    <label>Date</label>
+    <input id="date" type="date">
 
-  <label>Miles Travelled</label>
-  <input id="miles" type="number" step="0.1" placeholder="e.g. 45.5">
+    <label>Staff Name</label>
+    <input id="staff" placeholder="e.g. James Biggs">
 
-  <label>Miles already claimed this tax year</label>
-  <input id="already" type="number" step="1" placeholder="e.g. 3200">
+    <label>Client Code</label>
+    <input id="clientCode" placeholder="e.g. CL001">
 
-  <hr style="border:0;border-top:1px solid #333;margin:15px 0;">
+    <label>Client Name</label>
+    <input id="clientName" placeholder="e.g. ABC Limited">
 
-  <h3 style="margin:0;font-size:14px;color:#ccc;">
-    Advisory Fuel Rate (Company Car)
-  </h3>
+    <label>Trip Reason</label>
+    <input id="reason" placeholder="e.g. Client meeting, records collection">
 
-  <label>Fuel Type</label>
-  <select id="fuel">
-    <option value="petrol">Petrol</option>
-    <option value="diesel">Diesel</option>
-    <option value="lpg">LPG</option>
-    <option value="electric_home">Electric (Home)</option>
-    <option value="electric_public">Electric (Public)</option>
-  </select>
+    <label>Miles Travelled</label>
+    <input id="miles" type="number" step="0.1">
 
-  <label>Engine Size</label>
-  <select id="engine">
-    <option value="small">Small</option>
-    <option value="medium">Medium</option>
-    <option value="large">Large</option>
-  </select>
+    <label>Miles already claimed this tax year</label>
+    <input id="already" type="number" step="1" value="0">
 
-  <button onclick="addTrip()">Add Trip</button>
-</div>
+    <hr style="border:0;border-top:1px solid #333;margin:15px 0;">
 
-<!-- TOTALS -->
-<div class="card">
-  <h2 style="margin:0;font-size:16px;">Totals</h2>
+    <h3 style="margin:0;font-size:14px;color:#ccc;">
+      Advisory Fuel Rate (Company Car)
+    </h3>
 
-  <div class="pill">
-    <div class="k">Total Miles</div>
-    <div class="v" id="totalMiles">0</div>
+    <label>Fuel Type</label>
+    <select id="fuel">
+      <option value="petrol">Petrol</option>
+      <option value="diesel">Diesel</option>
+      <option value="lpg">LPG</option>
+      <option value="electric_home">Electric (Home)</option>
+      <option value="electric_public">Electric (Public)</option>
+    </select>
+
+    <label>Engine Size</label>
+    <select id="engine">
+      <option value="small">Small</option>
+      <option value="medium">Medium</option>
+      <option value="large">Large</option>
+    </select>
+
+    <button onclick="addTrip()">Add Trip</button>
   </div>
 
-  <div class="pill">
-    <div class="k">Mileage Claim (45p/25p)</div>
-    <div class="v" id="totalClaim">£0.00</div>
+  <!-- RIGHT: TOTALS -->
+  <div class="card">
+    <h2 style="margin:0 0 10px;font-size:16px;">Totals</h2>
+
+    <div class="pill">
+      <div class="k">Total Miles</div>
+      <div class="v" id="totalMiles">0.0</div>
+    </div>
+
+    <div class="pill">
+      <div class="k">Mileage Claim</div>
+      <div class="v" id="totalClaim">£0.00</div>
+    </div>
+
+    <div class="pill">
+      <div class="k">AFR Fuel Cost</div>
+      <div class="v" id="totalFuel">£0.00</div>
+    </div>
+
+    <div class="pill">
+      <div class="k">VAT Element (Fuel ÷ 6)</div>
+      <div class="v" id="totalVAT">£0.00</div>
+    </div>
+
+    <button class="secondary" onclick="exportCSV()">Export CSV</button>
   </div>
 
-  <div class="pill">
-    <div class="k">AFR Fuel Cost</div>
-    <div class="v" id="totalFuel">£0.00</div>
-  </div>
-
-  <div class="pill">
-    <div class="k">VAT Element (Fuel ÷ 6)</div>
-    <div class="v" id="totalVAT">£0.00</div>
-  </div>
-
-  <button class="secondary" onclick="exportCSV()">Export CSV</button>
 </div>
 
 <!-- TRIPS TABLE -->
-<div class="card">
-  <h2 style="margin:0;font-size:16px;">Trips Logged</h2>
+<div class="card" style="margin-top:14px;">
+  <h2 style="margin:0 0 10px;font-size:16px;">Trips Logged</h2>
 
   <table>
     <thead>
       <tr>
         <th>Date</th>
         <th>Staff</th>
+        <th>Client Code</th>
+        <th>Client Name</th>
+        <th>Reason</th>
         <th>Miles</th>
         <th>Mileage £</th>
         <th>Fuel £</th>
@@ -198,7 +228,7 @@ VAT element is calculated as fuel ÷ 6.
       </tr>
     </thead>
     <tbody id="rows">
-      <tr><td colspan="6" style="color:#777;">No trips yet.</td></tr>
+      <tr><td colspan="9" style="color:#777;">No trips added yet.</td></tr>
     </tbody>
   </table>
 </div>
@@ -206,7 +236,7 @@ VAT element is calculated as fuel ÷ 6.
 </div>
 
 <script>
-/* AFR Table (Update Quarterly from GOV.UK) */
+/* AFR Rates Table */
 const AFR = {
   petrol: { small:12, medium:14, large:22 },
   diesel: { small:12, medium:13, large:18 },
@@ -224,7 +254,7 @@ function gbp(n){
   }).format(n);
 }
 
-/* Mileage Allowance */
+/* Standard Mileage Allowance */
 function mileageClaim(miles, already){
   let threshold = 10000;
   let remaining45 = Math.max(0, threshold - already);
@@ -236,8 +266,8 @@ function mileageClaim(miles, already){
 }
 
 /* AFR Fuel + VAT */
-function afrCalc(miles, fuelType, engine){
-  let ratePence = AFR[fuelType][engine];
+function afrCalc(miles, fuel, engine){
+  let ratePence = AFR[fuel][engine];
   let fuelCost = (ratePence/100) * miles;
   let vat = fuelCost / 6;
   return { fuelCost, vat };
@@ -246,25 +276,32 @@ function afrCalc(miles, fuelType, engine){
 function addTrip(){
   let date = document.getElementById("date").value;
   let staff = document.getElementById("staff").value;
+
+  let clientCode = document.getElementById("clientCode").value;
+  let clientName = document.getElementById("clientName").value;
+  let reason = document.getElementById("reason").value;
+
   let miles = parseFloat(document.getElementById("miles").value);
   let already = parseFloat(document.getElementById("already").value) || 0;
 
   let fuel = document.getElementById("fuel").value;
   let engine = document.getElementById("engine").value;
 
-  if(!miles || miles <= 0){
+  if(!miles || miles<=0){
     alert("Please enter valid miles.");
     return;
   }
 
   let claim = mileageClaim(miles, already);
-  let fuelRes = afrCalc(miles, fuel, engine);
+  let afr = afrCalc(miles, fuel, engine);
 
   trips.push({
-    date, staff, miles,
+    date, staff,
+    clientCode, clientName, reason,
+    miles,
     claim,
-    fuel: fuelRes.fuelCost,
-    vat: fuelRes.vat
+    fuel: afr.fuelCost,
+    vat: afr.vat
   });
 
   render();
@@ -274,12 +311,11 @@ function render(){
   let tbody = document.getElementById("rows");
   tbody.innerHTML = "";
 
-  if(trips.length === 0){
-    tbody.innerHTML = `<tr><td colspan="6" style="color:#777;">No trips yet.</td></tr>`;
-    return;
-  }
-
   let totalMiles=0, totalClaim=0, totalFuel=0, totalVAT=0;
+
+  if(trips.length===0){
+    tbody.innerHTML = `<tr><td colspan="9" style="color:#777;">No trips added yet.</td></tr>`;
+  }
 
   trips.forEach(t=>{
     totalMiles += t.miles;
@@ -291,6 +327,9 @@ function render(){
       <tr>
         <td>${t.date}</td>
         <td>${t.staff}</td>
+        <td>${t.clientCode}</td>
+        <td>${t.clientName}</td>
+        <td>${t.reason}</td>
         <td>${t.miles.toFixed(1)}</td>
         <td>${gbp(t.claim)}</td>
         <td>${gbp(t.fuel)}</td>
@@ -305,12 +344,12 @@ function render(){
   document.getElementById("totalVAT").textContent = gbp(totalVAT);
 }
 
-/* Export Trips */
+/* Export CSV */
 function exportCSV(){
-  let csv = "Date,Staff,Miles,MileageClaim,FuelCost,VAT\n";
+  let csv = "Date,Staff,ClientCode,ClientName,Reason,Miles,MileageClaim,FuelCost,VAT\n";
 
   trips.forEach(t=>{
-    csv += `${t.date},${t.staff},${t.miles.toFixed(1)},${t.claim.toFixed(2)},${t.fuel.toFixed(2)},${t.vat.toFixed(2)}\n`;
+    csv += `${t.date},${t.staff},${t.clientCode},${t.clientName},${t.reason},${t.miles.toFixed(1)},${t.claim.toFixed(2)},${t.fuel.toFixed(2)},${t.vat.toFixed(2)}\n`;
   });
 
   let blob = new Blob([csv], {type:"text/csv"});
