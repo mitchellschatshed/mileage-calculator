@@ -1,116 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitchells Mileage + AFR VAT Calculator</title>
+<title>Mitchells Mileage Calculator</title>
 
 <style>
-  body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#111;
-    color:#fff;
-  }
+body {
+  margin:0;
+  background:#111;
+  font-family:Arial, sans-serif;
+  color:white;
+}
 
-  .wrap{
-    max-width:1000px;
-    margin:auto;
-    padding:25px;
-  }
+.wrap {
+  max-width:1000px;
+  margin:auto;
+  padding:25px;
+}
 
-  h1{
-    font-size:22px;
-    margin-bottom:5px;
-  }
+h1 {
+  font-size:22px;
+  margin-bottom:5px;
+}
 
-  .sub{
-    color:#bbb;
-    font-size:14px;
-    margin-bottom:20px;
-    line-height:1.4;
-  }
+.sub {
+  color:#bbb;
+  font-size:14px;
+  margin-bottom:20px;
+}
 
-  .card{
-    background:#1b1b1b;
-    padding:18px;
-    border-radius:10px;
-    margin-bottom:15px;
-    box-shadow:0 8px 25px rgba(0,0,0,.5);
-  }
+.card {
+  background:#1b1b1b;
+  padding:18px;
+  border-radius:10px;
+  margin-bottom:15px;
+  box-shadow:0 8px 25px rgba(0,0,0,.5);
+}
 
-  label{
-    display:block;
-    margin:10px 0 6px;
-    font-size:13px;
-    color:#bbb;
-  }
+label {
+  display:block;
+  margin:10px 0 6px;
+  font-size:13px;
+  color:#bbb;
+}
 
-  input, select{
-    width:100%;
-    padding:10px;
-    border-radius:8px;
-    border:1px solid #333;
-    background:#0f0f0f;
-    color:white;
-  }
+input, select {
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #333;
+  background:#0f0f0f;
+  color:white;
+}
 
-  button{
-    margin-top:15px;
-    padding:10px 16px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    background:#2aa876;
-    color:white;
-    font-size:14px;
-  }
+button {
+  background:#2aa876;
+  border:none;
+  color:white;
+  padding:10px 16px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+  margin-top:12px;
+}
 
-  button.secondary{
-    background:#333;
-  }
+button.secondary {
+  background:#333;
+}
 
-  table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-  }
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
 
-  th, td{
-    border-bottom:1px solid #333;
-    padding:10px;
-    font-size:13px;
-    text-align:left;
-  }
+th, td {
+  border-bottom:1px solid #333;
+  padding:10px;
+  font-size:13px;
+  text-align:left;
+}
 
-  th{
-    color:#aaa;
-  }
+th {
+  color:#aaa;
+}
 
-  .pill{
-    background:#141414;
-    padding:12px;
-    border-radius:10px;
-    border:1px solid #333;
-    margin-top:10px;
-  }
+.pill {
+  background:#141414;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #333;
+  margin-top:10px;
+}
 
-  .pill .k{
-    color:#aaa;
-    font-size:12px;
-  }
+.pill .k {
+  color:#aaa;
+  font-size:12px;
+}
 
-  .pill .v{
-    font-size:18px;
-    margin-top:6px;
-  }
-
-  .note{
-    color:#888;
-    font-size:12px;
-    margin-top:8px;
-    line-height:1.4;
-  }
+.pill .v {
+  font-size:18px;
+  margin-top:6px;
+}
 </style>
 </head>
 
@@ -119,10 +110,11 @@
 
 <h1>Mitchells Mileage + AFR VAT Calculator</h1>
 <p class="sub">
-Standard mileage allowance plus HMRC Advisory Fuel Rates (AFR) for VAT fuel calculations.<br>
-AFR rates must be updated quarterly from GOV.UK.
+Standard mileage claim plus HMRC Advisory Fuel Rates (AFR).  
+VAT element is calculated as fuel ÷ 6.
 </p>
 
+<!-- INPUT FORM -->
 <div class="card">
   <h2 style="margin:0;font-size:16px;">Add Trip</h2>
 
@@ -141,7 +133,7 @@ AFR rates must be updated quarterly from GOV.UK.
   <hr style="border:0;border-top:1px solid #333;margin:15px 0;">
 
   <h3 style="margin:0;font-size:14px;color:#ccc;">
-    Advisory Fuel Rate (Company Car Fuel)
+    Advisory Fuel Rate (Company Car)
   </h3>
 
   <label>Fuel Type</label>
@@ -153,16 +145,17 @@ AFR rates must be updated quarterly from GOV.UK.
     <option value="electric_public">Electric (Public)</option>
   </select>
 
-  <label>Engine Size Category</label>
+  <label>Engine Size</label>
   <select id="engine">
-    <option value="small">Small (≤1400cc petrol / ≤1600cc diesel)</option>
-    <option value="medium">Medium (1401–2000cc)</option>
-    <option value="large">Large (>2000cc)</option>
+    <option value="small">Small</option>
+    <option value="medium">Medium</option>
+    <option value="large">Large</option>
   </select>
 
   <button onclick="addTrip()">Add Trip</button>
 </div>
 
+<!-- TOTALS -->
 <div class="card">
   <h2 style="margin:0;font-size:16px;">Totals</h2>
 
@@ -189,8 +182,9 @@ AFR rates must be updated quarterly from GOV.UK.
   <button class="secondary" onclick="exportCSV()">Export CSV</button>
 </div>
 
+<!-- TRIPS TABLE -->
 <div class="card">
-  <h2 style="margin:0;font-size:16px;">Trips</h2>
+  <h2 style="margin:0;font-size:16px;">Trips Logged</h2>
 
   <table>
     <thead>
@@ -207,24 +201,16 @@ AFR rates must be updated quarterly from GOV.UK.
       <tr><td colspan="6" style="color:#777;">No trips yet.</td></tr>
     </tbody>
   </table>
-
-  <p class="note">
-    AFR rates are from HMRC Advisory Fuel Rates guidance:
-    https://www.gov.uk/guidance/advisory-fuel-rates
-  </p>
 </div>
 
 </div>
 
 <script>
-/* -----------------------------
-   HMRC Advisory Fuel Rates Table
-   Update quarterly
---------------------------------*/
+/* AFR Table (Update Quarterly from GOV.UK) */
 const AFR = {
-  petrol:   { small:12, medium:14, large:22 },
-  diesel:   { small:12, medium:13, large:18 },
-  lpg:      { small:11, medium:13, large:21 },
+  petrol: { small:12, medium:14, large:22 },
+  diesel: { small:12, medium:13, large:18 },
+  lpg:    { small:11, medium:13, large:21 },
   electric_home:   { small:7, medium:7, large:7 },
   electric_public: { small:14, medium:14, large:14 }
 };
@@ -238,10 +224,9 @@ function gbp(n){
   }).format(n);
 }
 
-/* Mileage Allowance 45p/25p */
+/* Mileage Allowance */
 function mileageClaim(miles, already){
   let threshold = 10000;
-
   let remaining45 = Math.max(0, threshold - already);
 
   let at45 = Math.min(miles, remaining45);
@@ -251,7 +236,7 @@ function mileageClaim(miles, already){
 }
 
 /* AFR Fuel + VAT */
-function afrFuel(miles, fuelType, engine){
+function afrCalc(miles, fuelType, engine){
   let ratePence = AFR[fuelType][engine];
   let fuelCost = (ratePence/100) * miles;
   let vat = fuelCost / 6;
@@ -267,19 +252,19 @@ function addTrip(){
   let fuel = document.getElementById("fuel").value;
   let engine = document.getElementById("engine").value;
 
-  if(!miles || miles<=0){
-    alert("Enter valid miles.");
+  if(!miles || miles <= 0){
+    alert("Please enter valid miles.");
     return;
   }
 
   let claim = mileageClaim(miles, already);
-  let fuelCalc = afrFuel(miles, fuel, engine);
+  let fuelRes = afrCalc(miles, fuel, engine);
 
   trips.push({
     date, staff, miles,
     claim,
-    fuel: fuelCalc.fuelCost,
-    vat: fuelCalc.vat
+    fuel: fuelRes.fuelCost,
+    vat: fuelRes.vat
   });
 
   render();
@@ -289,7 +274,7 @@ function render(){
   let tbody = document.getElementById("rows");
   tbody.innerHTML = "";
 
-  if(trips.length===0){
+  if(trips.length === 0){
     tbody.innerHTML = `<tr><td colspan="6" style="color:#777;">No trips yet.</td></tr>`;
     return;
   }
@@ -320,10 +305,12 @@ function render(){
   document.getElementById("totalVAT").textContent = gbp(totalVAT);
 }
 
+/* Export Trips */
 function exportCSV(){
   let csv = "Date,Staff,Miles,MileageClaim,FuelCost,VAT\n";
+
   trips.forEach(t=>{
-    csv += `${t.date},${t.staff},${t.miles},${t.claim.toFixed(2)},${t.fuel.toFixed(2)},${t.vat.toFixed(2)}\n`;
+    csv += `${t.date},${t.staff},${t.miles.toFixed(1)},${t.claim.toFixed(2)},${t.fuel.toFixed(2)},${t.vat.toFixed(2)}\n`;
   });
 
   let blob = new Blob([csv], {type:"text/csv"});
@@ -336,3 +323,4 @@ function exportCSV(){
 
 </body>
 </html>
+
