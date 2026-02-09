@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mitchells Mileage Calculator</title>
+<title>Mitchells Mileage Claim Tool</title>
 
 <style>
   :root{
@@ -16,6 +16,10 @@
     --accent:#2aa876;
     --accent2:#1f8d63;
     --danger:#d94b4b;
+  }
+
+  *{
+    box-sizing:border-box;
   }
 
   body{
@@ -48,17 +52,17 @@
     line-height:1.5;
   }
 
-  /* Dashboard layout */
+  /* Dashboard Layout */
   .grid{
     display:grid;
     grid-template-columns:1fr;
     gap:18px;
-    align-items:stretch; /* Equal height */
   }
 
   @media(min-width:900px){
     .grid{
       grid-template-columns:1.25fr 0.75fr;
+      align-items:start;
     }
   }
 
@@ -69,9 +73,7 @@
     border-radius:16px;
     padding:18px;
     box-shadow:0 6px 18px rgba(0,0,0,.08);
-    display:flex;
-    flex-direction:column;
-    height:100%;
+    display:block;
   }
 
   .card h2{
@@ -80,11 +82,12 @@
     font-weight:650;
   }
 
-  /* Form */
+  /* Form Rows */
   .row{
     display:grid;
     grid-template-columns:1fr;
     gap:12px;
+    margin-top:12px;
   }
 
   @media(min-width:650px){
@@ -128,7 +131,7 @@
     display:flex;
     gap:10px;
     flex-wrap:wrap;
-    margin-top:14px;
+    margin-top:16px;
   }
 
   button{
@@ -187,7 +190,7 @@
     font-weight:700;
   }
 
-  /* Table */
+  /* Trips Table */
   table{
     width:100%;
     border-collapse:collapse;
@@ -255,7 +258,7 @@
       </div>
     </div>
 
-    <div class="row" style="margin-top:12px;">
+    <div class="row">
       <div>
         <label>Client Code</label>
         <input id="clientCode">
@@ -266,10 +269,14 @@
       </div>
     </div>
 
-    <label style="margin-top:12px;">Trip Reason</label>
-    <input id="reason">
+    <div class="row">
+      <div style="grid-column:1 / -1;">
+        <label>Trip Reason</label>
+        <input id="reason">
+      </div>
+    </div>
 
-    <div class="row" style="margin-top:12px;">
+    <div class="row">
       <div>
         <label>Miles Travelled</label>
         <input id="miles" type="number" step="0.1">
@@ -282,25 +289,31 @@
 
     <hr>
 
-    <h2 style="font-size:14px;color:var(--muted);margin-bottom:8px;">
+    <h2 style="font-size:14px;color:var(--muted);">
       Advisory Fuel Rate (Company Car)
     </h2>
 
-    <label>Engine Size Category</label>
-    <select id="engine">
-      <option value="small">Small (≤1400cc petrol / ≤1600cc diesel)</option>
-      <option value="medium">Medium (1401–2000cc)</option>
-      <option value="large">Large (>2000cc)</option>
-    </select>
+    <div class="row">
+      <div>
+        <label>Engine Size Category</label>
+        <select id="engine">
+          <option value="small">Small (≤1400cc petrol / ≤1600cc diesel)</option>
+          <option value="medium">Medium (1401–2000cc)</option>
+          <option value="large">Large (>2000cc)</option>
+        </select>
+      </div>
 
-    <label style="margin-top:12px;">Fuel Type</label>
-    <select id="fuel">
-      <option value="petrol">Petrol</option>
-      <option value="diesel">Diesel</option>
-      <option value="lpg">LPG</option>
-      <option value="electric_home">Electric (Home)</option>
-      <option value="electric_public">Electric (Public)</option>
-    </select>
+      <div>
+        <label>Fuel Type</label>
+        <select id="fuel">
+          <option value="petrol">Petrol</option>
+          <option value="diesel">Diesel</option>
+          <option value="lpg">LPG</option>
+          <option value="electric_home">Electric (Home)</option>
+          <option value="electric_public">Electric (Public)</option>
+        </select>
+      </div>
+    </div>
 
     <div class="actions">
       <button class="primary" onclick="addTrip()">Add Trip</button>
@@ -340,7 +353,7 @@
 
 </div>
 
-<!-- TRIPS -->
+<!-- TRIPS TABLE -->
 <div class="card" style="margin-top:18px;">
   <h2>Trips Logged</h2>
 
