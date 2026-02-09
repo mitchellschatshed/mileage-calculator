@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mitchells Mileage Calculator</title>
+  <style>
+    :root { --bg:#111; --card:#1b1b1b; --text:#f4f4f4; --muted:#b8b8b8; --accent:#2aa876; --danger:#e05252; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family: Arial, Helvetica, sans-serif; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 28px 16px 80px; }
+    h1 { margin: 0 0 6px; font-size: 22px; }
+    p.sub { margin: 0 0 18px; color: var(--muted); font-size: 14px; line-height: 1.4; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    @media (min-width: 860px) { .grid { grid-template-columns: 1.05fr 0.95fr; } }
+    .card { background: var(--card); border-radius: 10px; padding: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+    .row { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    @media (min-width: 560px) { .row { grid-template-columns: 1fr 1fr; } }
+    label { display:block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    input, select { width:100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #333; background: #0f0f0f; color: var(--text); }
+    input::placeholder { color: #777; }
+    .actions { display:flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    button { background: var(--accent); border: none; color: white; padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    button.secondary { background: #2b2b2b; border: 1px solid #3a3a3a; }
+    button.danger { background: var(--danger); }
+    .totals { display:grid; grid-template-columns: 1fr; gap: 10px; margin-top: 10px; }
+    .pill { background:#141414; border:1px solid #2a2a2a; padding: 12px; border-radius: 10px; }
+    .pill .k { color: var(--muted); font-size: 12px; }
+    .pill .v { font-size: 18px; margin-top: 6px; }
+    table { width:100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #2a2a2a; padding: 10px 8px; text-align: left; font-size: 13px; }
+    th { color: var(--muted); font-weight: 600; }
+    .small { color: var(--muted); font-size: 12px; margin-top: 10px; line-height: 1.4; }
+    .footerbar { position: fixed; left:0; right:0; bottom:0; background: rgba(0,0,0,.6); backdrop-filter: blur(10px); border-top: 1px solid #2a2a2a; }
+    .footerbar .inner { max-width:980px; margin: 0 auto; padding: 10px 16px; display:flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+    .badge { color: var(--muted); font-size: 12px; }
+    .error { color: #ffb4b4; font-size: 13px; margin-top: 10px; display:none; }
+    .right { display:flex; gap: 10px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mitchells Mileage Calculator</h1>
+    <p class="sub">
+      Adds trips and calculates an estimated claim using standard rates: <strong>45p</strong> per mile for the first
+      <strong>10,000</strong> miles in the tax year, then <strong>25p</strong> per mile thereafter.
+      This tool is for convenience and does not replace your internal policy.
+    </p>
+
+    <div class="grid">
+      <div class="card">
+        <h2 style="margin:0 0 10px; font-size:16px;">Add a trip</h2>
+
+        <div class="row">
+          <div>
+            <label for="date">Date</label>
+            <input id="date" type="date" />
+          </div>
+          <div>
+            <label for="staff">Staff name</label>
+            <input id="staff" type="text" placeholder="e.g., James Biggs" />
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <div>
+            <label for="purpose">Purpose</label>
+            <input id="purpose" type="text" placeholder="e.g., Client visit, bank run" />
+          </div>
+          <div>
+            <label for="tripType">Trip type</label>
+            <select id="tripType">
+              <option value="round">Round trip</option>
+              <option value="oneway">One way</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <div>
+            <label for="distance">Distance (miles)</label>
+            <input id="distance" type="number" min="0" step="0.1" placeholder="e.g., 18.4" />
+          </div>
+          <div>
+            <label for="taxYearMiles">Miles already claimed this tax year</label>
+            <input id="taxYearMiles" type="number" min="0" step="1" placeholder="e.g., 3200" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="addBtn" type="button">Add trip</button>
+          <button id="clearFormBtn" class="secondary" type="button">Clear form</button>
+        </div>
+
+        <div id="err" class="error"></div>
+
+        <p class="small">
+          Notes: “Distance” should be the one-way miles if you select “Round trip”, the tool will double it.
+          “Miles already claimed” is used to apply the 10,000 mile threshold correctly.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2 style="margin:0 0 10px; font-size:16px;">Totals</h2>
+
+        <div class="totals">
+          <div class="pill">
+            <div class="k">Total miles (all trips added)</div>
+            <div class="v" id="totalMiles">0.0</div>
+          </div>
+          <div class="pill">
+            <div class="k">Estimated claim amount</div>
+            <div class="v" id="totalClaim">£0.00</div>
+          </div>
+          <div class="pill">
+            <div class="k">Tax year miles after these trips</div>
+            <div class="v" id="yearMilesAfter">0</div>
+          </div>
+        </div>
+
+        <div class="actions" style="margin-top:14px;">
+          <button id="exportBtn" type="button">Export CSV</button>
+          <button id="clearTripsBtn" class="danger" type="button">Clear trips</button>
+        </div>
+
+        <p class="small">
+          Calculation: 45p per mile up to 10,000 tax-year miles, then 25p per mile.
+        </p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <h2 style="margin:0 0 10px; font-size:16px;">Trips</h2>
+      <div style="overflow:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Staff</th>
+              <th>Purpose</th>
+              <th>Miles</th>
+              <th>Rate mix</th>
+              <th>Claim</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tripRows">
+            <tr><td colspan="7" style="color:#888;">No trips added yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footerbar">
+    <div class="inner">
+      <div class="badge">Runs entirely in the browser. No data is sent anywhere.</div>
+      <div class="right">
+        <button class="secondary" type="button" id="printBtn">Print</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Rates: 45p up to 10,000 miles in a tax year, then 25p
+  const RATE1 = 0.45;
+  const RATE2 = 0.25;
+  const THRESHOLD = 10000;
+
+  const el = (id) => document.getElementById(id);
+
+  const state = {
+    trips: [],
+    milesAlready: 0
+  };
+
+  function formatGBP(n) {
+    return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(n);
+  }
+
+  function showError(msg) {
+    const e = el("err");
+    e.textContent = msg;
+    e.style.display = "block";
+  }
+
+  function clearError() {
+    const e = el("err");
+    e.textContent = "";
+    e.style.display = "none";
+  }
+
+  function computeClaimForTrip(miles, milesAlready) {
+    // Returns: { claim, milesAt45, milesAt25 }
+    const before = milesAlready;
+    const after = milesAlready + miles;
+
+    const milesAt45 = Math.max(0, Math.min(THRESHOLD, after) - Math.min(THRESHOLD, before));
+    const milesAt25 = miles - milesAt45;
+
+    const claim = (milesAt45 * RATE1) + (milesAt25 * RATE2);
+    return { claim, milesAt45, milesAt25 };
+  }
+
+  function recalcTotals() {
+    const totalMiles = state.trips.reduce((s, t) => s + t.miles, 0);
+    const milesAfter = Math.round(state.milesAlready + totalMiles);
+
+    const totalClaim = state.trips.reduce((s, t) => s + t.claim, 0);
+
+    el("totalMiles").textContent = totalMiles.toFixed(1);
+    el("totalClaim").textContent = formatGBP(totalClaim);
+    el("yearMilesAfter").textContent = String(milesAfter);
+  }
+
+  function renderTrips() {
+    const tbody = el("tripRows");
+    tbody.innerHTML = "";
+
+    if (state.trips.length === 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="7" style="color:#888;">No trips added yet.</td>`;
+      tbody.appendChild(tr);
+      recalcTotals();
+      return;
+    }
+
+    state.trips.forEach((t, idx) => {
+      const tr = document.createElement("tr");
+      const mix = `${t.milesAt45.toFixed(1)} mi @ 45p, ${t.milesAt25.toFixed(1)} mi @ 25p`;
+      tr.innerHTML = `
+        <td>${t.date || ""}</td>
+        <td>${escapeHtml(t.staff)}</td>
+        <td>${escapeHtml(t.purpose)}</td>
+        <td>${t.miles.toFixed(1)}</td>
+        <td>${mix}</td>
+        <td>${formatGBP(t.claim)}</td>
+        <td><button class="secondary" type="button" data-remove="${idx}">Remove</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll("button[data-remove]").forEach((b) => {
+      b.addEventListener("click", () => {
+        const i = Number(b.getAttribute("data-remove"));
+        state.trips.splice(i, 1);
+        renderTrips();
+      });
+    });
+
+    recalcTotals();
+  }
+
+  function escapeHtml(s) {
+    return String(s || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function addTrip() {
+    clearError();
+
+    const date = el("date").value;
+    const staff = el("staff").value.trim();
+    const purpose = el("purpose").value.trim();
+    const tripType = el("tripType").value;
+    const distance = Number(el("distance").value);
+    const milesAlready = Number(el("taxYearMiles").value);
+
+    if (!Number.isFinite(distance) || distance <= 0) return showError("Please enter a valid distance in miles (greater than zero).");
+    if (!Number.isFinite(milesAlready) || milesAlready < 0) return showError("Please enter a valid value for miles already claimed (zero or more).");
+
+    const miles = tripType === "round" ? distance * 2 : distance;
+
+    state.milesAlready = milesAlready;
+
+    // For correct banding per trip, compute sequentially based on prior trips
+    const milesBeforeThisTrip = state.milesAlready + state.trips.reduce((s, t) => s + t.miles, 0);
+    const calc = computeClaimForTrip(miles, milesBeforeThisTrip);
+
+    state.trips.push({
+      date,
+      staff,
+      purpose,
+      miles,
+      milesAt45: calc.milesAt45,
+      milesAt25: calc.milesAt25,
+      claim: calc.claim
+    });
+
+    renderTrips();
+  }
+
+  function clearForm() {
+    clearError();
+    el("date").value = "";
+    el("staff").value = "";
+    el("purpose").value = "";
+    el("tripType").value = "round";
+    el("distance").value = "";
+    // Keep taxYearMiles as it is, to help repeated entry
+  }
+
+  function clearTrips() {
+    state.trips = [];
+    renderTrips();
+  }
+
+  function exportCSV() {
+    const rows = [
+      ["Date","Staff","Purpose","Miles","Miles@45p","Miles@25p","ClaimGBP"]
+    ];
+
+    state.trips.forEach(t => {
+      rows.push([
+        t.date || "",
+        t.staff || "",
+        t.purpose || "",
+        t.miles.toFixed(1),
+        t.milesAt45.toFixed(1),
+        t.milesAt25.toFixed(1),
+        t.claim.toFixed(2)
+      ]);
+    });
+
+    const csv = rows.map(r => r.map(cell => {
+      const s = String(cell ?? "");
+      if (s.includes(",") || s.includes('"') || s.includes("\n")) return `"${s.replaceAll('"','""')}"`;
+      return s;
+    }).join(",")).join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mileage-trips.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  el("addBtn").addEventListener("click", addTrip);
+  el("clearFormBtn").addEventListener("click", clearForm);
+  el("clearTripsBtn").addEventListener("click", clearTrips);
+  el("exportBtn").addEventListener("click", exportCSV);
+  el("printBtn").addEventListener("click", () => window.print());
+
+  // Initial render
+  renderTrips();
+</script>
+</body>
+</html>
