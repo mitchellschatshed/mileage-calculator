@@ -7,26 +7,28 @@
 
 <style>
   :root{
-    --bg:#0f1115;
-    --card:#171a21;
-    --border:#262a33;
-    --text:#f5f6f7;
-    --muted:#a7acb8;
+    --bg:#f4f6f9;
+    --card:#ffffff;
+    --border:#d9dee7;
+    --text:#1c1f26;
+    --muted:#5f6775;
+
     --accent:#2aa876;
     --accent2:#1f8d63;
+    --danger:#d94b4b;
   }
 
   body{
     margin:0;
     background:var(--bg);
     color:var(--text);
-    font-family: "Segoe UI", Arial, sans-serif;
+    font-family:"Segoe UI", Arial, sans-serif;
   }
 
   .wrap{
-    max-width:1100px;
+    max-width:1150px;
     margin:auto;
-    padding:30px 18px 70px;
+    padding:32px 18px 70px;
   }
 
   header{
@@ -35,15 +37,15 @@
 
   h1{
     margin:0;
-    font-size:24px;
-    font-weight:600;
+    font-size:26px;
+    font-weight:650;
   }
 
   .sub{
     margin-top:6px;
     color:var(--muted);
     font-size:14px;
-    line-height:1.4;
+    line-height:1.5;
   }
 
   /* Dashboard layout */
@@ -51,31 +53,34 @@
     display:grid;
     grid-template-columns:1fr;
     gap:18px;
+    align-items:stretch; /* Equal height */
   }
 
   @media(min-width:900px){
     .grid{
-      grid-template-columns:1.2fr 0.8fr;
-      align-items:start;
+      grid-template-columns:1.25fr 0.75fr;
     }
   }
 
-  /* Card styling */
+  /* Cards */
   .card{
     background:var(--card);
     border:1px solid var(--border);
     border-radius:16px;
     padding:18px;
-    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    display:flex;
+    flex-direction:column;
+    height:100%;
   }
 
   .card h2{
     margin:0 0 12px;
     font-size:16px;
-    font-weight:600;
+    font-weight:650;
   }
 
-  /* Form layout */
+  /* Form */
   .row{
     display:grid;
     grid-template-columns:1fr;
@@ -93,6 +98,7 @@
     font-size:12px;
     color:var(--muted);
     margin-bottom:6px;
+    font-weight:600;
   }
 
   input, select{
@@ -100,8 +106,7 @@
     padding:11px 12px;
     border-radius:10px;
     border:1px solid var(--border);
-    background:#0c0e12;
-    color:var(--text);
+    background:#fbfcfe;
     font-size:14px;
     outline:none;
     transition:.15s;
@@ -123,7 +128,7 @@
     display:flex;
     gap:10px;
     flex-wrap:wrap;
-    margin-top:12px;
+    margin-top:14px;
   }
 
   button{
@@ -132,7 +137,7 @@
     padding:11px 14px;
     cursor:pointer;
     font-size:14px;
-    font-weight:600;
+    font-weight:650;
     transition:.15s;
   }
 
@@ -146,21 +151,28 @@
   }
 
   button.secondary{
-    background:#232733;
-    color:white;
+    background:#eef1f6;
     border:1px solid var(--border);
+    color:#222;
   }
 
   button.secondary:hover{
-    background:#2c3140;
+    background:#e2e7ef;
   }
 
-  /* Totals pills */
+  button.danger{
+    background:var(--danger);
+    color:white;
+    padding:7px 10px;
+    font-size:12px;
+  }
+
+  /* Totals */
   .pill{
     padding:14px;
     border-radius:14px;
     border:1px solid var(--border);
-    background:#11141b;
+    background:#f9fafc;
     margin-top:12px;
   }
 
@@ -172,7 +184,7 @@
   .pill .v{
     margin-top:6px;
     font-size:20px;
-    font-weight:600;
+    font-weight:700;
   }
 
   /* Table */
@@ -180,8 +192,8 @@
     width:100%;
     border-collapse:collapse;
     margin-top:10px;
-    overflow:hidden;
     border-radius:12px;
+    overflow:hidden;
   }
 
   th, td{
@@ -193,19 +205,25 @@
 
   th{
     color:var(--muted);
-    font-weight:600;
-    background:#10131a;
+    font-weight:650;
+    background:#f1f3f7;
   }
 
   tr:hover td{
-    background:rgba(255,255,255,0.03);
+    background:#f8fafc;
   }
 
-  .note{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:10px;
-    line-height:1.4;
+  /* Print Mode */
+  @media print{
+    body{
+      background:white;
+    }
+    .grid, button, input, select, hr{
+      display:none !important;
+    }
+    .card{
+      box-shadow:none;
+    }
   }
 </style>
 </head>
@@ -214,16 +232,15 @@
 <div class="wrap">
 
 <header>
-  <h1>Mitchells Mileage & VAT Fuel Calculator</h1>
+  <h1>Mitchells Mileage Claim Tool</h1>
   <p class="sub">
-    Standard mileage allowance (45p/25p) plus HMRC Advisory Fuel Rates (AFR).  
-    VAT element is calculated as fuel cost ÷ 6.
+    Mileage allowance (45p/25p) plus HMRC Advisory Fuel Rates for VAT fuel element (fuel ÷ 6).
   </p>
 </header>
 
 <div class="grid">
 
-  <!-- Add Trip -->
+  <!-- LEFT: FORM -->
   <div class="card">
     <h2>Add Trip</h2>
 
@@ -234,23 +251,23 @@
       </div>
       <div>
         <label>Staff Name</label>
-        <input id="staff" placeholder="e.g. James Biggs">
+        <input id="staff">
       </div>
     </div>
 
     <div class="row" style="margin-top:12px;">
       <div>
         <label>Client Code</label>
-        <input id="clientCode" placeholder="e.g. A00205">
+        <input id="clientCode">
       </div>
       <div>
         <label>Client Name</label>
-        <input id="clientName" placeholder="e.g. ABC Limited">
+        <input id="clientName">
       </div>
     </div>
 
     <label style="margin-top:12px;">Trip Reason</label>
-    <input id="reason" placeholder="e.g. Client meeting, records pickup">
+    <input id="reason">
 
     <div class="row" style="margin-top:12px;">
       <div>
@@ -266,37 +283,32 @@
     <hr>
 
     <h2 style="font-size:14px;color:var(--muted);margin-bottom:8px;">
-      Advisory Fuel Rate
+      Advisory Fuel Rate (Company Car)
     </h2>
 
-    <div class="row">
-      <div>
-        <label>Fuel Type</label>
-        <select id="fuel">
-          <option value="petrol">Petrol</option>
-          <option value="diesel">Diesel</option>
-          <option value="lpg">LPG</option>
-          <option value="electric_home">Electric (Home)</option>
-          <option value="electric_public">Electric (Public)</option>
-        </select>
-      </div>
+    <label>Engine Size Category</label>
+    <select id="engine">
+      <option value="small">Small (≤1400cc petrol / ≤1600cc diesel)</option>
+      <option value="medium">Medium (1401–2000cc)</option>
+      <option value="large">Large (>2000cc)</option>
+    </select>
 
-      <div>
-        <label>Engine Size</label>
-        <select id="engine">
-          <option value="small">Small</option>
-          <option value="medium">Medium</option>
-          <option value="large">Large</option>
-        </select>
-      </div>
-    </div>
+    <label style="margin-top:12px;">Fuel Type</label>
+    <select id="fuel">
+      <option value="petrol">Petrol</option>
+      <option value="diesel">Diesel</option>
+      <option value="lpg">LPG</option>
+      <option value="electric_home">Electric (Home)</option>
+      <option value="electric_public">Electric (Public)</option>
+    </select>
 
     <div class="actions">
       <button class="primary" onclick="addTrip()">Add Trip</button>
+      <button class="secondary" onclick="resetForm()">Reset Form</button>
     </div>
   </div>
 
-  <!-- Totals -->
+  <!-- RIGHT: TOTALS -->
   <div class="card">
     <h2>Totals</h2>
 
@@ -316,18 +328,19 @@
     </div>
 
     <div class="pill">
-      <div class="k">VAT Element (Fuel ÷ 6)</div>
+      <div class="k">VAT Element</div>
       <div class="v" id="totalVAT">£0.00</div>
     </div>
 
     <div class="actions">
       <button class="secondary" onclick="exportCSV()">Export CSV</button>
+      <button class="secondary" onclick="window.print()">Print Report</button>
     </div>
   </div>
 
 </div>
 
-<!-- Trips Table -->
+<!-- TRIPS -->
 <div class="card" style="margin-top:18px;">
   <h2>Trips Logged</h2>
 
@@ -342,16 +355,13 @@
         <th>Mileage £</th>
         <th>Fuel £</th>
         <th>VAT £</th>
+        <th></th>
       </tr>
     </thead>
     <tbody id="rows">
-      <tr><td colspan="8" style="color:#777;">No trips added yet.</td></tr>
+      <tr><td colspan="9" style="color:#777;">No trips yet.</td></tr>
     </tbody>
   </table>
-
-  <p class="note">
-    AFR rates must be updated quarterly from GOV.UK advisory fuel rates guidance.
-  </p>
 </div>
 
 </div>
@@ -377,10 +387,8 @@ function gbp(n){
 function mileageClaim(miles, already){
   let threshold = 10000;
   let remaining45 = Math.max(0, threshold - already);
-
   let at45 = Math.min(miles, remaining45);
   let at25 = miles - at45;
-
   return (at45 * 0.45) + (at25 * 0.25);
 }
 
@@ -392,16 +400,10 @@ function afrCalc(miles, fuel, engine){
 }
 
 function addTrip(){
-  let date = dateInput.value;
-  let staff = staffInput.value;
-  let clientCode = clientCodeInput.value;
-  let clientName = clientNameInput.value;
-  let reason = reasonInput.value;
-
   let miles = parseFloat(milesInput.value);
   let already = parseFloat(alreadyInput.value) || 0;
 
-  if(!miles || miles <= 0){
+  if(!miles || miles<=0){
     alert("Please enter valid miles.");
     return;
   }
@@ -410,9 +412,10 @@ function addTrip(){
   let afr = afrCalc(miles, fuelSelect.value, engineSelect.value);
 
   trips.push({
-    date, staff,
-    client: clientCode + " – " + clientName,
-    reason,
+    date: dateInput.value,
+    staff: staffInput.value,
+    client: clientCodeInput.value + " – " + clientNameInput.value,
+    reason: reasonInput.value,
     miles,
     claim,
     fuel: afr.fuelCost,
@@ -422,22 +425,38 @@ function addTrip(){
   render();
 }
 
+function resetForm(){
+  dateInput.value="";
+  staffInput.value="";
+  clientCodeInput.value="";
+  clientNameInput.value="";
+  reasonInput.value="";
+  milesInput.value="";
+  alreadyInput.value="0";
+  engineSelect.value="small";
+  fuelSelect.value="petrol";
+}
+
+function removeTrip(i){
+  trips.splice(i,1);
+  render();
+}
+
 function render(){
-  rows.innerHTML = "";
+  rows.innerHTML="";
+  let totalMiles=0,totalClaim=0,totalFuel=0,totalVAT=0;
 
-  let totalMiles=0, totalClaim=0, totalFuel=0, totalVAT=0;
-
-  if(trips.length === 0){
-    rows.innerHTML = `<tr><td colspan="8" style="color:#777;">No trips added yet.</td></tr>`;
+  if(trips.length===0){
+    rows.innerHTML=`<tr><td colspan="9" style="color:#777;">No trips yet.</td></tr>`;
   }
 
-  trips.forEach(t=>{
-    totalMiles += t.miles;
-    totalClaim += t.claim;
-    totalFuel += t.fuel;
-    totalVAT += t.vat;
+  trips.forEach((t,i)=>{
+    totalMiles+=t.miles;
+    totalClaim+=t.claim;
+    totalFuel+=t.fuel;
+    totalVAT+=t.vat;
 
-    rows.innerHTML += `
+    rows.innerHTML+=`
       <tr>
         <td>${t.date}</td>
         <td>${t.staff}</td>
@@ -447,46 +466,45 @@ function render(){
         <td>${gbp(t.claim)}</td>
         <td>${gbp(t.fuel)}</td>
         <td>${gbp(t.vat)}</td>
-      </tr>
-    `;
+        <td><button class="danger" onclick="removeTrip(${i})">Remove</button></td>
+      </tr>`;
   });
 
-  totalMilesEl.textContent = totalMiles.toFixed(1);
-  totalClaimEl.textContent = gbp(totalClaim);
-  totalFuelEl.textContent = gbp(totalFuel);
-  totalVATEl.textContent = gbp(totalVAT);
+  totalMilesEl.textContent=totalMiles.toFixed(1);
+  totalClaimEl.textContent=gbp(totalClaim);
+  totalFuelEl.textContent=gbp(totalFuel);
+  totalVATEl.textContent=gbp(totalVAT);
 }
 
 function exportCSV(){
-  let csv = "Date,Staff,Client,Reason,Miles,MileageClaim,FuelCost,VAT\n";
-
+  let csv="Date,Staff,Client,Reason,Miles,MileageClaim,FuelCost,VAT\n";
   trips.forEach(t=>{
-    csv += `${t.date},${t.staff},${t.client},${t.reason},${t.miles.toFixed(1)},${t.claim.toFixed(2)},${t.fuel.toFixed(2)},${t.vat.toFixed(2)}\n`;
+    csv+=`${t.date},${t.staff},${t.client},${t.reason},${t.miles.toFixed(1)},${t.claim.toFixed(2)},${t.fuel.toFixed(2)},${t.vat.toFixed(2)}\n`;
   });
 
-  let blob = new Blob([csv], {type:"text/csv"});
-  let link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "mileage_log.csv";
+  let blob=new Blob([csv],{type:"text/csv"});
+  let link=document.createElement("a");
+  link.href=URL.createObjectURL(blob);
+  link.download="mileage_log.csv";
   link.click();
 }
 
-/* Quick DOM refs */
-const dateInput = document.getElementById("date");
-const staffInput = document.getElementById("staff");
-const clientCodeInput = document.getElementById("clientCode");
-const clientNameInput = document.getElementById("clientName");
-const reasonInput = document.getElementById("reason");
-const milesInput = document.getElementById("miles");
-const alreadyInput = document.getElementById("already");
-const fuelSelect = document.getElementById("fuel");
-const engineSelect = document.getElementById("engine");
+/* DOM refs */
+const dateInput=document.getElementById("date");
+const staffInput=document.getElementById("staff");
+const clientCodeInput=document.getElementById("clientCode");
+const clientNameInput=document.getElementById("clientName");
+const reasonInput=document.getElementById("reason");
+const milesInput=document.getElementById("miles");
+const alreadyInput=document.getElementById("already");
+const fuelSelect=document.getElementById("fuel");
+const engineSelect=document.getElementById("engine");
 
-const rows = document.getElementById("rows");
-const totalMilesEl = document.getElementById("totalMiles");
-const totalClaimEl = document.getElementById("totalClaim");
-const totalFuelEl = document.getElementById("totalFuel");
-const totalVATEl = document.getElementById("totalVAT");
+const rows=document.getElementById("rows");
+const totalMilesEl=document.getElementById("totalMiles");
+const totalClaimEl=document.getElementById("totalClaim");
+const totalFuelEl=document.getElementById("totalFuel");
+const totalVATEl=document.getElementById("totalVAT");
 </script>
 
 </body>
